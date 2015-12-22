@@ -30,6 +30,7 @@ from scipy.stats import chisquare
 from copy import deepcopy
 import operator 
 import matplotlib
+from io import BytesIO
 #matplotlib.use('Agg')
 import matplotlib.pyplot
 import matplotlib.pyplot as plt
@@ -158,12 +159,17 @@ def stats_classification(Y, predY):
     myFIGA = plt.figure()
     plot_confusion_matrix(cm, title='Confusion matrix')
 
-    sio = cStringIO.StringIO()
-    myFIGA.savefig(sio, dpi=300, format='png') 
-    saveas = pickle.dumps(sio.getvalue())
-    cm_encoded = base64.b64encode(saveas)
+    #sio = cStringIO.StringIO()
+    #myFIGA.savefig(sio, dpi=300, format='png') 
+    #saveas = pickle.dumps(sio.getvalue())
+    #cm_encoded = base64.b64encode(saveas)
 
-    #plt.show()
+    figfile = BytesIO()
+    plt.savefig(figfile, format='png')
+    figfile.seek(0)  # rewind to beginning of file
+    cm_encoded = base64.b64encode(figfile.getvalue())
+
+    plt.show()
     plt.close()
 
     ## can plot normalized cm as well
