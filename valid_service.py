@@ -66,7 +66,7 @@ def getJsonContents (jsonInput):
 
                 if j == predictionFeature: 
                     real.append(temp)
-                else:
+                elif j == predictedFeature:
                     predicted.append(temp)
         
     except(ValueError, KeyError, TypeError):
