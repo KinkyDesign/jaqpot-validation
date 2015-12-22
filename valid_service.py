@@ -130,10 +130,10 @@ def stats_regression(Y, predY, num_predictors):
 
 
 def stats_classification(Y, predY):
-    Accuracy = sklearn.metrics.accuracy_score(Y, predY, normalize=True, sample_weight=None)
-    Precision = sklearn.metrics.precision_score(Y, predY, labels=None, pos_label=1, average='binary', sample_weight=None)
-    Recall = sklearn.metrics.recall_score(Y, predY, labels=None, pos_label=1, average='binary', sample_weight=None)
-    F1_score = sklearn.metrics.f1_score(Y, predY, labels=None, pos_label=1, average='binary', sample_weight=None)
+    Accuracy = sklearn.metrics.accuracy_score(Y, predY, normalize=True, sample_weight=None) #pos label 1 deleted
+    Precision = sklearn.metrics.precision_score(Y, predY, labels=None, average='binary', sample_weight=None)
+    Recall = sklearn.metrics.recall_score(Y, predY, labels=None, average='binary', sample_weight=None)
+    F1_score = sklearn.metrics.f1_score(Y, predY, labels=None, average='binary', sample_weight=None)
     Jacc = sklearn.metrics.jaccard_similarity_score(Y, predY) 
     #TP.TN/FP/FN - > MCC etc ?
 
