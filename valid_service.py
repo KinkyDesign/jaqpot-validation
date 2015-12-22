@@ -71,7 +71,7 @@ def getJsonContents (jsonInput):
         
     except(ValueError, KeyError, TypeError):
         print "Error: Please check JSON syntax... \n"
-
+    print len(real), len(predicted)
     return real, predicted, type, number_of_variables, predictionFeature, predictedFeature
 
 
@@ -131,10 +131,14 @@ def stats_regression(Y, predY, num_predictors):
 
 def stats_classification(Y, predY):
     Accuracy = sklearn.metrics.accuracy_score(Y, predY) #, normalize=True, sample_weight=None) #pos label 1 deleted
-    Precision = sklearn.metrics.precision_score(Y, predY)#, labels=None, average='binary', sample_weight=None)
-    Recall = sklearn.metrics.recall_score(Y, predY)#, labels=None, average='binary', sample_weight=None)
-    F1_score = sklearn.metrics.f1_score(Y, predY)#, labels=None, average='binary', sample_weight=None)
+    Precision = sklearn.metrics.precision_score(Y, predY, pos_label=None)#, labels=None, average='binary', sample_weight=None)
+    Recall = sklearn.metrics.recall_score(Y, predY, pos_label=None)#, labels=None, average='binary', sample_weight=None)
+    F1_score = sklearn.metrics.f1_score(Y, predY, pos_label=None)#, labels=None, average='binary', sample_weight=None)
     Jacc = sklearn.metrics.jaccard_similarity_score(Y, predY) 
+    #Precision = 0
+    #Recall = 0
+    #F1_score = 0
+    #Jacc = 0 
     #TP.TN/FP/FN - > MCC etc ?
 
     """
@@ -215,7 +219,7 @@ def create_task_interlabtest():
         task = {
         "singleCalculations": {"Algorithm Type": type, 
                                "Number of predictor variables": number_of_variables,
-                               "R^2" : Accuracy,
+                               "Accuracy" : Accuracy,
                                "Precision" : Precision,
                                "Recall" : Recall,
                                "F1_score" : F1_score,
