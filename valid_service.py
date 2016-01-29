@@ -422,8 +422,8 @@ def create_task_interlabtest():
                                }
                              },
         "figures": {
-                   "Real Vs Predicted" : "fig1",
-                   "QQ Plot" : "fig2"
+                   "Real Vs Predicted" : fig1,
+                   "QQ Plot" : fig2
                    }
         }
     elif type == "CLASSIFICATION":
