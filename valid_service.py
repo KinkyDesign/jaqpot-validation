@@ -196,8 +196,10 @@ def plot_norm (real, predicted):
     plt.plot(real_sorted, minus, 'r--', c="green")
 	
     adjustment = abs(max(real_sorted) - min (real_sorted))*0.05 # +/- 5%
+    adjustment2 = abs(max(predicted_sorted) - min (predicted_sorted))*0.05 # +/- 5%
     plt.xlim([round(min(real_sorted)) - adjustment, round(max(real_sorted)) + adjustment,])
-    plt.ylim([round(min(real_sorted)) - adjustment, round(max(real_sorted)) + adjustment,])
+    #plt.ylim([round(min(real_sorted)) - adjustment, round(max(real_sorted)) + adjustment,])
+    plt.ylim([round(min(predicted_sorted)) - adjustment, round(max(predicted_sorted)) + adjustment2,])
 
     plt.xlabel("Real Values")
     plt.ylabel("Predicted Values")
