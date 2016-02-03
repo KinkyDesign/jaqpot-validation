@@ -37,7 +37,7 @@ import matplotlib.pyplot
 import matplotlib.pyplot as plt
 from operator import itemgetter
 
-#from PIL import Image ## Hide for production
+from PIL import Image ## Hide for production
 
 app = Flask(__name__, static_url_path = "")
 
@@ -203,12 +203,17 @@ def plot_norm (real, predicted):
     plt.tight_layout()
     #plt.show() ## HIDE show on production
 
-    #sio = cStringIO.StringIO()
-    sio = BytesIO()
-    myFIGA.savefig(sio, dpi=300, format='png') # myFIGA1a.savefig(sio, dpi=300, format='png', bbox_extra_artists=(myLegend,), bbox_inches='tight')
-    saveas = pickle.dumps(sio.getvalue())
-    fig_encoded = base64.b64encode(saveas)
-	
+    ###sio = cStringIO.StringIO()
+    #sio = BytesIO()
+    #myFIGA.savefig(sio, dpi=300, format='png') # myFIGA1a.savefig(sio, dpi=300, format='png', bbox_extra_artists=(myLegend,), bbox_inches='tight')
+    #saveas = pickle.dumps(sio.getvalue())
+    #fig_encoded = base64.b64encode(saveas)
+
+    figfile = BytesIO()
+    myFIGA.savefig(figfile, dpi=300, format='png')
+    figfile.seek(0)  # rewind to beginning of file
+    fig_encoded = base64.b64encode(figfile.getvalue())
+
     plt.close()
     return fig_encoded
 
@@ -467,6 +472,19 @@ def create_task_interlabtest():
     jsonOutput = jsonify( task )
 
     ## DEBUG 
+    print fig1
+    """
+    with open("C:/Python27/delete_this", "rb") as b64_file:
+         content = b64_file.read()
+
+    decc = base64.standard_b64decode(content) 
+    print decc
+    mystr = pickle.loads(decc)
+    stb = io.BytesIO(mystr)
+    img = Image.open(stb)
+    img.seek(0)
+    img.save('C:/Python27/delete_this_too.png', 'png')
+    """
     # REGRESSION IMAGES
     """
     decc = base64.standard_b64decode(fig1) 
@@ -474,7 +492,14 @@ def create_task_interlabtest():
     stb = io.BytesIO(mystr)
     img = Image.open(stb)
     img.seek(0)
-    img.save('C:/Python27/Flask-0.10.1/python-api/Val/rvp.png', 'png')
+    img.save('C:/Python27/Flask-0.10.1/python-api/Val/fig1W.png', 'png')
+
+    decc = base64.standard_b64decode(fig2) 
+    mystr = pickle.loads(decc)
+    stb = io.BytesIO(mystr)
+    img = Image.open(stb)
+    img.seek(0)
+    img.save('C:/Python27/Flask-0.10.1/python-api/Val/fig2W.png', 'png')
     """
     # CLASSIFICATION IMAGES
     """
@@ -491,5 +516,6 @@ if __name__ == '__main__':
     app.run(host="0.0.0.0", port = 5000, debug = True)
 
 # curl -i -H "Content-Type: application/json" -X POST -d @C:/Python27/Flask-0.10.1/python-api/val.json http://localhost:5000/pws/validation
+# curl -i -H "Content-Type: application/json" -X POST -d @C:/Python27/Flask-0.10.1/python-api/valW.json http://localhost:5000/pws/validation
 # C:\Python27\Flask-0.10.1\python-api 
 # C:/Python27/python valid_service.py
