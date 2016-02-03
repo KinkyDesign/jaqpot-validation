@@ -477,7 +477,7 @@ def create_task_interlabtest():
     jsonOutput = jsonify( task )
 
     ## DEBUG 
-    print fig1
+    #print fig1
     """
     with open("C:/Python27/delete_this", "rb") as b64_file:
          content = b64_file.read()
