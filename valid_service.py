@@ -137,8 +137,8 @@ def qq_plot(real, predicted):
 
     adjustment1 = abs(max(real_percentile) - min (real_percentile))*0.05 # +/- 5%
     adjustment2 = abs(max(predicted_percentile) - min (predicted_percentile))*0.05 # +/- 5%
-    plt.xlim([round(min(real_percentile)) - adjustment1, round(max(real_percentile)) + adjustment1,])
-    plt.ylim([round(min(predicted_percentile)) - adjustment2, round(max(predicted_percentile)) + adjustment2,])
+    plt.xlim([round(min(real_percentile),2) - adjustment1, round(max(real_percentile),2) + adjustment1,])
+    plt.ylim([round(min(predicted_percentile),2) - adjustment2, round(max(predicted_percentile),2) + adjustment2,])
 
     plt.xlabel("Quantiles for Real Values")
     plt.ylabel("Quantiles for Predicted  Values")
@@ -197,9 +197,9 @@ def plot_norm (real, predicted):
 	
     adjustment = abs(max(real_sorted) - min (real_sorted))*0.05 # +/- 5%
     adjustment2 = abs(max(predicted_sorted) - min (predicted_sorted))*0.05 # +/- 5%
-    plt.xlim([round(min(real_sorted)) - adjustment, round(max(real_sorted)) + adjustment,])
+    plt.xlim([round(min(real_sorted),2) - adjustment, round(max(real_sorted),2) + adjustment,])
     #plt.ylim([round(min(real_sorted)) - adjustment, round(max(real_sorted)) + adjustment,])
-    plt.ylim([round(min(predicted_sorted)) - adjustment, round(max(predicted_sorted)) + adjustment2,])
+    plt.ylim([round(min(predicted_sorted),2) - adjustment2, round(max(predicted_sorted),2) + adjustment2,])
 
     plt.xlabel("Real Values")
     plt.ylabel("Predicted Values")
