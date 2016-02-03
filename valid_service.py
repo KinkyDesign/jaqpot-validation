@@ -149,11 +149,16 @@ def qq_plot(real, predicted):
     plt.tight_layout()
     #plt.show() ## HIDE show on production
 
-    #sio = cStringIO.StringIO()
-    sio = BytesIO()
-    myFIGA.savefig(sio, dpi=300, format='png') # (sio, dpi=300, format='png', bbox_extra_artists=(myLegend,), bbox_inches='tight')
-    saveas = pickle.dumps(sio.getvalue())
-    fig_encoded = base64.b64encode(saveas)
+    ##sio = cStringIO.StringIO()
+    #sio = BytesIO()
+    #myFIGA.savefig(sio, dpi=300, format='png') # (sio, dpi=300, format='png', bbox_extra_artists=(myLegend,), bbox_inches='tight')
+    #saveas = pickle.dumps(sio.getvalue())
+    #fig_encoded = base64.b64encode(saveas)
+
+    figfile = BytesIO()
+    myFIGA.savefig(figfile, dpi=300, format='png')
+    figfile.seek(0)  # rewind to beginning of file
+    fig_encoded = base64.b64encode(figfile.getvalue())
 
     plt.close()
     return fig_encoded
@@ -365,16 +370,16 @@ def stats_classification(Y, predY):
     #cm_encoded = base64.b64encode(saveas)
 
     ## Bytes IO
-    bio = BytesIO()
-    myFIGA.savefig(bio, dpi=300, format='png')
-    saveas = pickle.dumps(bio.getvalue())
-    cm_encoded = base64.b64encode(saveas)
+    #bio = BytesIO()
+    #myFIGA.savefig(bio, dpi=300, format='png')
+    #saveas = pickle.dumps(bio.getvalue())
+    #cm_encoded = base64.b64encode(saveas)
 
     ## Bytes IO v2
-    #figfile = BytesIO()
-    #plt.savefig(figfile, format='png')
-    #figfile.seek(0)  # rewind to beginning of file
-    #cm_encoded = base64.b64encode(figfile.getvalue())
+    figfile = BytesIO()
+    plt.savefig(figfile, dpi=300, format='png')
+    figfile.seek(0)  # rewind to beginning of file
+    cm_encoded = base64.b64encode(figfile.getvalue())
 
     #plt.show() ## show CM
     plt.close()
