@@ -281,6 +281,7 @@ def stats_classification(Y, predY):
     Jacc = sklearn.metrics.jaccard_similarity_score(Y, predY) 
 
     ## General case for roc/auc
+    """
     AUC_decision = []
     editedY = []
     indices = list(set(Y)) 
@@ -351,6 +352,7 @@ def stats_classification(Y, predY):
     #plt.show() ##
     plt.close()
     ## end general case roc/auc
+    """
 
     # DEBUG Conf Mat
     #from collections import Counter
@@ -390,7 +392,7 @@ def stats_classification(Y, predY):
     #cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, numpy.newaxis]
     #plot_confusion_matrix(cm_normalized, title='Normalized confusion matrix')
 
-    return round(Accuracy,2), round(Precision,2), round(Recall,2), round(F1_score,2), round(Jacc,2), cm_encoded, roc_encoded
+    return round(Accuracy,2), round(Precision,2), round(Recall,2), round(F1_score,2), round(Jacc,2), cm_encoded #, roc_encoded
 
 
 """
