@@ -37,7 +37,7 @@ import matplotlib.pyplot
 import matplotlib.pyplot as plt
 from operator import itemgetter
 
-from PIL import Image ## Hide for production
+#from PIL import Image ## Hide for production
 
 app = Flask(__name__, static_url_path = "")
 
