@@ -248,12 +248,21 @@ def stats_regression(Y, predY, num_predictors):
         SSYY += numpy.power ((predY[i] - meanYpred4r2), 2) 
         SSXY += (Y[i] - meanY4r2)*(predY[i] - meanYpred4r2)
     
-    if SSXX ==0 or SSYY ==0:
-        R2wolfram = 0
-    else:
-        R2wolfram = numpy.power(SSXY, 2)/(SSXX*SSYY)
+    ## R2 by Wolfram
+    #if SSXX ==0 or SSYY ==0:
+    #    R2wolfram = 0
+    #else:
+    #    R2wolfram = numpy.power(SSXY, 2)/(SSXX*SSYY)
 
-    R2adjusted = 1 -((1-R2wolfram)*((len(Y)-1)/(len(Y)-num_predictors-1)))
+    ## R2 by SKL
+    R2wolfram = sklearn.metrics.r2_score(Y, predY)
+    if R2wolfram<0:
+        R2wolfram = 0
+
+    if len(Y) == num_predictors+1:
+        R2adjusted = 0
+    else:
+        R2adjusted = 1 -((1-R2wolfram)*((len(Y)-1)/(len(Y)-num_predictors-1)))
 
     RSS = 0 # residual sum of sq
     for i in range (len(Y)):
@@ -263,10 +272,12 @@ def stats_regression(Y, predY, num_predictors):
     for i in range (len(Y)):
         SSR +=  numpy.power ((Y[i] - meanYpred4r2), 2)
 
-    StdError = numpy.sqrt(abs(RSS/(len(Y)-num_predictors-1)))
-    Fvalue = (SSR/num_predictors)/(RSS/(len(Y)-num_predictors-1))
-
-    ##add errors from sklearn
+    if len(Y) == num_predictors+1:
+        StdError = 0
+        Fvalue = 0
+    else:
+        StdError = numpy.sqrt(abs(RSS/(len(Y)-num_predictors-1)))
+        Fvalue = (SSR/num_predictors)/(RSS/(len(Y)-num_predictors-1))
 
     return round(R2wolfram,2), round(R2adjusted,2), round(RMSD,2), round(Fvalue,2), round(StdError,2), fig1, fig2
 
