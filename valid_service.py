@@ -42,7 +42,7 @@ from operator import itemgetter
 app = Flask(__name__, static_url_path = "")
 
 """
-    JSON Parser for interlabtest
+    JSON Parser for Validation
 """
 def getJsonContents (jsonInput):
     try:
@@ -422,12 +422,14 @@ def mat2dic(matrix):
     return myDict
 
 @app.route('/pws/validation', methods = ['POST'])
-def create_task_interlabtest():
+def create_task_validation():
 
-    if not request.json:
-        abort(400)
+    if not request.environ['body_copy']:
+        abort(500)
 
-    real, predicted, type, number_of_variables, predictionFeature, predictedFeature = getJsonContents(request.json)
+    readThis = json.loads(request.environ['body_copy'])
+
+    real, predicted, type, number_of_variables, predictionFeature, predictedFeature = getJsonContents(readThis)
     #print real,"\n", predicted,"\n",  type,"\n",  number_of_variables,"\n",  predictionFeature, "\n", predictedFeature
 
     full_table = [real, predicted]
@@ -538,7 +540,53 @@ def create_task_interlabtest():
     """
     return jsonOutput, 201 
 
+############################################################
+
+class WSGICopyBody(object):
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        from cStringIO import StringIO
+        input = environ.get('wsgi.input')
+        length = environ.get('CONTENT_LENGTH', '0')
+        length = 0 if length == '' else int(length)
+        body = ''
+        if length == 0:
+            environ['body_copy'] = ''
+            if input is None:
+                return
+            if environ.get('HTTP_TRANSFER_ENCODING','0') == 'chunked':
+                size = int(input.readline(),16)
+                while size > 0:
+                    temp = str(input.read(size+2)).strip()
+                    body += temp
+                    size = int(input.readline(),16)
+        else:
+            body = environ['wsgi.input'].read(length)
+        environ['body_copy'] = body
+        environ['wsgi.input'] = StringIO(body)
+
+        # Call the wrapped application
+        app_iter = self.application(environ, 
+                                    self._sr_callback(start_response))
+
+        # Return modified response
+        #print app_iter
+        return app_iter
+
+    def _sr_callback(self, start_response):
+        def callback(status, headers, exc_info=None):
+
+            # Call upstream start_response
+            start_response(status, headers, exc_info)
+        #print callback
+        return callback
+
+############################################################
+
 if __name__ == '__main__': 
+    app.wsgi_app = WSGICopyBody(app.wsgi_app) ##
     app.run(host="0.0.0.0", port = 5000, debug = True)
 
 # curl -i -H "Content-Type: application/json" -X POST -d @C:/Python27/Flask-0.10.1/python-api/val.json http://localhost:5000/pws/validation
