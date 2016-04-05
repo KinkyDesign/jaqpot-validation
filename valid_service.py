@@ -460,7 +460,7 @@ def create_task_validation():
                    }
         }
     elif type == "CLASSIFICATION":
-        Accuracy, Precision, Recall, F1_score, Jaccard, cm_encoded, roc_encoded = stats_classification(real, predicted)
+        Accuracy, Precision, Recall, F1_score, Jaccard, cm_encoded = stats_classification(real, predicted)
         task = {
         "singleCalculations": {"Algorithm Type": type, 
                                "Number of predictor variables": number_of_variables,
