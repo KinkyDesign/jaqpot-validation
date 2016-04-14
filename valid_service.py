@@ -257,7 +257,7 @@ def stats_regression(Y, predY, num_predictors):
     #slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(Y, predY)
     #print R2wolfram, sklearn.metrics.r2_score(Y, predY), numpy.power(r_value,2)
 	
-    R2wolfram = sklearn.metrics.r2_score(Y, predY), numpy.power(r_value,2)
+    R2wolfram = sklearn.metrics.r2_score(Y, predY)
     ###
     if len(Y) == num_predictors+1:
         R2adjusted = 0
