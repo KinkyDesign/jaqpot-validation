@@ -245,9 +245,10 @@ def stats_regression(Y, predY, num_predictors):
     SSXY = 0
     for i in range (len(Y)):
         SSXX += numpy.power ((Y[i] - meanY4r2), 2)
-        SSYY += numpy.power ((predY[i] - meanYpred4r2), 2) 
-        SSXY += (Y[i] - meanY4r2)*(predY[i] - meanYpred4r2)
-    
+        #SSYY += numpy.power ((predY[i] - meanYpred4r2), 2) 
+        SSYY += numpy.power ((predY[i] - meanY4r2), 2) 
+        #SSXY += (Y[i] - meanY4r2)*(predY[i] - meanYpred4r2)
+        SSXY += (Y[i] - meanY4r2)*(predY[i] - meanY4r2)   
     ## R2 by Wolfram
     if SSXX ==0 or SSYY ==0:
         R2wolfram = 0
@@ -256,9 +257,11 @@ def stats_regression(Y, predY, num_predictors):
 
     #slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(Y, predY)
     #print R2wolfram, sklearn.metrics.r2_score(Y, predY), numpy.power(r_value,2)
-	
-    R2wolfram = sklearn.metrics.r2_score(Y, predY)
+
     ###
+    #R2wolfram = sklearn.metrics.r2_score(Y, predY)
+    ###
+
     if len(Y) == num_predictors+1:
         R2adjusted = 0
     else:
