@@ -258,7 +258,7 @@ def stats_regression(Y, predY, num_predictors):
     #print R2wolfram, sklearn.metrics.r2_score(Y, predY), numpy.power(r_value,2)
 	
     R2wolfram = sklearn.metrics.r2_score(Y, predY), numpy.power(r_value,2)
-
+    ###
     if len(Y) == num_predictors+1:
         R2adjusted = 0
     else:
