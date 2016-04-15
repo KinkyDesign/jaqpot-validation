@@ -256,10 +256,22 @@ def stats_regression(Y, predY, num_predictors):
         R2wolfram = numpy.power(SSXY, 2)/(SSXX*SSYY)
 
     #slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(Y, predY)
-    #print R2wolfram, sklearn.metrics.r2_score(Y, predY), numpy.power(r_value,2)
 
+    SSres = 0
+    SStot = 0
+    for i in range (len(Y)):
+        SSres += numpy.power ((Y[i] - predY[i]), 2)
+        SStot += numpy.power ((Y[i] - meanY4r2), 2)
+
+    if SStot !=0:
+        R2 = 1 - (SSres/SStot)
+    else: 
+        if SSres !=0:
+            R2 = 0
+        else:
+            R2 = 1
     ###
-    #R2wolfram = sklearn.metrics.r2_score(Y, predY)
+    #R2skl= sklearn.metrics.r2_score(Y, predY)
     ###
 
     if len(Y) == num_predictors+1:
@@ -282,15 +294,15 @@ def stats_regression(Y, predY, num_predictors):
         StdError = numpy.sqrt(abs(RSS/(len(Y)-num_predictors-1)))
         Fvalue = (SSR/num_predictors)/(RSS/(len(Y)-num_predictors-1))
 
-    if R2wolfram<0:
-        R2wolfram = 0
+    if R2<0:
+        R2 = 0
     if R2adjusted<0:
         R2adjusted = 0
     if StdError<0:
         StdError = 0
     if Fvalue<0:
         Fvalue = 0
-    return round(R2wolfram,2), round(R2adjusted,2), round(RMSD,2), round(Fvalue,2), round(StdError,2), fig1, fig2
+    return round(R2,2), round(R2adjusted,2), round(RMSD,2), round(Fvalue,2), round(StdError,2), fig1, fig2
 
 """
     Get Classification Stats
@@ -444,11 +456,11 @@ def create_task_validation():
     #print full_table_dict
 
     if type == "REGRESSION" and (max(real)-min(real)!=0) and (max(predicted)-min(predicted)!=0):
-        R2wolfram, R2adjusted, RMSD, Fvalue, StdError, fig1, fig2 = stats_regression(real, predicted, number_of_variables)
+        R2, R2adjusted, RMSD, Fvalue, StdError, fig1, fig2 = stats_regression(real, predicted, number_of_variables)
         task = {
         "singleCalculations": {"Algorithm Type": type, 
                                "Number of predictor variables": number_of_variables,
-                               "R^2" : R2wolfram,
+                               "R^2 (OECD)" : R2,
                                "R^2 Adjusted (if applicable)" : R2adjusted,
                                "RMSD" : RMSD,
                                "F-Value" : Fvalue,
