@@ -147,7 +147,7 @@ def qq_plot(real, predicted):
     myLegend = plt.legend(handles = [straight], loc=2, fontsize = 'small')
 	
     plt.tight_layout()
-    plt.show() ## HIDE show on production
+    #plt.show() ## HIDE show on production
 
     ##sio = cStringIO.StringIO()
     #sio = BytesIO()
@@ -208,7 +208,7 @@ def plot_norm (real, predicted):
     myLegend = plt.legend(handles = [straight, dashed], loc=2, fontsize = 'small')
 	
     plt.tight_layout()
-    plt.show() ## HIDE show on production
+    #plt.show() ## HIDE show on production
 
     ###sio = cStringIO.StringIO()
     #sio = BytesIO()
@@ -245,26 +245,35 @@ def stats_regression(Y, predY, num_predictors):
     SSXY = 0
     for i in range (len(Y)):
         SSXX += numpy.power ((Y[i] - meanY4r2), 2)
-        #SSYY += numpy.power ((predY[i] - meanYpred4r2), 2) 
-        SSYY += numpy.power ((predY[i] - meanY4r2), 2) 
-        #SSXY += (Y[i] - meanY4r2)*(predY[i] - meanYpred4r2)
-        SSXY += (Y[i] - meanY4r2)*(predY[i] - meanY4r2)   
+
+        SSYY += numpy.power ((predY[i] - meanYpred4r2), 2) 
+        #SSYY += numpy.power ((predY[i] - meanY4r2), 2) 
+
+        SSXY += (Y[i] - meanY4r2)*(predY[i] - meanYpred4r2)
+        #SSXY += (Y[i] - meanY4r2)*(predY[i] - meanY4r2)   
+
     ## R2 by Wolfram
     if SSXX ==0 or SSYY ==0:
         R2wolfram = 0
     else:
         R2wolfram = numpy.power(SSXY, 2)/(SSXX*SSYY)
 
+    #print "R2 by Wolfram: ", R2wolfram
     #slope, intercept, r_value, p_value, std_err = scipy.stats.linregress(Y, predY)
 
+    R2 = 0
     SSres = 0
     SStot = 0
+    SSreg = 0
     for i in range (len(Y)):
+        SSreg += numpy.power ((predY[i] - meanY4r2), 2)
         SSres += numpy.power ((Y[i] - predY[i]), 2)
         SStot += numpy.power ((Y[i] - meanY4r2), 2)
 
+    #print "SSReg: ", SSreg, "    SSRes: ", SSres, "    SSTot: ", SStot
     if SStot !=0:
         R2 = 1 - (SSres/SStot)
+        #R2_v2 = SSreg/SStot
     else: 
         if SSres !=0:
             R2 = 0
@@ -274,10 +283,15 @@ def stats_regression(Y, predY, num_predictors):
     #R2skl= sklearn.metrics.r2_score(Y, predY)
     ###
 
-    if len(Y) == num_predictors+1:
-        R2adjusted = 0
+    if len(Y) <= num_predictors+1 or len(Y) == 1:
+        R2adjusted = R2 # =0?
     else:
-        R2adjusted = 1 -((1-R2wolfram)*((len(Y)-1)/(len(Y)-num_predictors-1)))
+        if SStot!=0:
+            #R2adjusted = 1 -((1-R2)*((len(Y)-1)/(len(Y)-num_predictors-1)))
+            R2adjusted = 1 - ( ( (SSres) / (len(Y)-num_predictors-1) )/( (SStot) / (len(Y)-1) ) ) 
+            #print R2adjusted
+        else:
+            R2adjusted = 0
 
     RSS = 0 # residual sum of sq
     for i in range (len(Y)):
