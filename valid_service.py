@@ -58,10 +58,15 @@ def getJsonContents (jsonInput):
         dataEntry = dataset.get("dataEntry", None)
         variables = dataEntry[0]["values"].keys() 
 
+        compounds = [] ## 06/06/16
+
         real = [] 
         predicted = []
 
         for i in range(len(dataEntry)):
+            c_uri = dataEntry[i]["compound"]["URI"]  ## 06/06/16
+            c_name = dataEntry[i]["compound"]["name"]  ## 06/06/16
+            compounds.append([c_uri,c_name])  ## 06/06/16
             for j in variables:
                 temp = dataEntry[i]["values"].get(j)
 
@@ -76,7 +81,7 @@ def getJsonContents (jsonInput):
     except(ValueError, KeyError, TypeError):
         print "Error: Please check JSON syntax... \n"
     #print len(real), len(predicted)
-    return real, predicted, type, number_of_variables, predictionFeature, predictedFeature
+    return real, predicted, type, number_of_variables, predictionFeature, predictedFeature, compounds ## 06/06/16
 
 """
     Matplotlib default Confusion Matrix
@@ -452,6 +457,12 @@ def mat2dic(matrix):
         myDict["Row_" + str(i+1)] = [matrix[i][0], matrix[i][1]]
     return myDict
 
+def mat2dicV2(matrix,compounds):
+    myDict = {}
+    for i in range (len (matrix)):
+        myDict["<a href="+str(compounds[i][0])+">"+str(compounds[i][1])+"</a>"] = [matrix[i][0], matrix[i][1]]
+    return myDict
+
 @app.route('/pws/validation', methods = ['POST'])
 def create_task_validation():
 
@@ -460,13 +471,17 @@ def create_task_validation():
 
     readThis = json.loads(request.environ['body_copy'])
 
-    real, predicted, type, number_of_variables, predictionFeature, predictedFeature = getJsonContents(readThis)
+    #real, predicted, type, number_of_variables, predictionFeature, predictedFeature = getJsonContents(readThis) ## Worked
+    real, predicted, type, number_of_variables, predictionFeature, predictedFeature, compounds = getJsonContents(readThis) ## 06/06/16
     #print real,"\n", predicted,"\n",  type,"\n",  number_of_variables,"\n",  predictionFeature, "\n", predictedFeature
 
     full_table = [real, predicted]
     full_table_transposed = map(list, zip(*full_table)) 
     #print full_table,full_table_transposed
-    full_table_dict = mat2dic(full_table_transposed)
+
+    full_table_dict = mat2dicV2(full_table_transposed,compounds) ## 06/06/16
+    #full_table_dict = mat2dic(full_table_transposed) ## Worked
+
     #print full_table_dict
 
     if type == "REGRESSION" and (max(real)-min(real)!=0) and (max(predicted)-min(predicted)!=0):
