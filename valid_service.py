@@ -460,7 +460,8 @@ def mat2dic(matrix):
 def mat2dicV2(matrix,compounds):
     myDict = {}
     for i in range (len (matrix)):
-        myDict['<a href="'+str(compounds[i][0])+'">'+str(compounds[i][1])+'</a>'] = [matrix[i][0], matrix[i][1]]
+        #myDict['<a href="'+str(compounds[i][0])+'">'+str(compounds[i][1])+'</a>'] = [matrix[i][0], matrix[i][1]]
+        myDict["<a href='"+str(compounds[i][0])+"'>"+str(compounds[i][1])+"</a>"] = [matrix[i][0], matrix[i][1]]
     return myDict
 
 @app.route('/pws/validation', methods = ['POST'])
