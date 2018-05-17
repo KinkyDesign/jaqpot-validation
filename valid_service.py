@@ -30,11 +30,7 @@ import operator
 import matplotlib
 import io
 from io import BytesIO
-<<<<<<< HEAD
-# matplotlib.use('Agg')
-=======
 matplotlib.use('Agg')
->>>>>>> master
 import matplotlib.pyplot
 import matplotlib.pyplot as plt
 from operator import itemgetter
