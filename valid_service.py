@@ -17,7 +17,7 @@ import time
 import random
 from random import randrange
 import sklearn
-from sklearn import cross_validation
+#from sklearn import cross_validation
 from sklearn import metrics
 from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.metrics import confusion_matrix
@@ -30,7 +30,11 @@ import operator
 import matplotlib
 import io
 from io import BytesIO
+<<<<<<< HEAD
 # matplotlib.use('Agg')
+=======
+matplotlib.use('Agg')
+>>>>>>> master
 import matplotlib.pyplot
 import matplotlib.pyplot as plt
 from operator import itemgetter
@@ -273,13 +277,13 @@ def stats_regression(Y, predY, num_predictors):
         SSres += numpy.power ((Y[i] - predY[i]), 2)
         SStot += numpy.power ((Y[i] - meanY4r2), 2)
 
-    #print "SSReg: ", SSreg, "    SSRes: ", SSres, "    SSTot: ", SStot
+    print "SSReg: ", SSreg, "    SSRes: ", SSres, "    SSTot: ", SStot
     if SStot !=0:
-        R2 = 1 - (SSres/SStot)
+        R2 = 1 - (SSres/SStot) 
         #R2_v2 = SSreg/SStot
     else: 
         if SSres !=0:
-            R2 = 0
+            R2 = 0 #until 17 05 2018
         else:
             R2 = 1
     ###
@@ -326,9 +330,9 @@ def stats_regression(Y, predY, num_predictors):
 """
 def stats_classification(Y, predY):
     Accuracy = sklearn.metrics.accuracy_score(Y, predY) #, normalize=True, sample_weight=None) #pos label 1 deleted
-    Precision = sklearn.metrics.precision_score(Y, predY, pos_label=None)#, labels=None, average='binary', sample_weight=None)
-    Recall = sklearn.metrics.recall_score(Y, predY, pos_label=None)#, labels=None, average='binary', sample_weight=None)
-    F1_score = sklearn.metrics.f1_score(Y, predY, pos_label=None)#, labels=None, average='binary', sample_weight=None)
+    Precision = sklearn.metrics.precision_score(Y, predY, pos_label=None, average = 'weighted')#, labels=None, average='binary', sample_weight=None)
+    Recall = sklearn.metrics.recall_score(Y, predY, pos_label=None, average = 'weighted')#, labels=None, average='binary', sample_weight=None)
+    F1_score = sklearn.metrics.f1_score(Y, predY, pos_label=None, average = 'weighted')#, labels=None, average='binary', sample_weight=None)
     Jacc = sklearn.metrics.jaccard_similarity_score(Y, predY) 
 
     ## General case for roc/auc
@@ -397,7 +401,7 @@ def stats_classification(Y, predY):
     #from collections import Counter
     #print Y, "\n", predY, "\n", list(set(Y))
     #print Counter(Y), Counter(predY)
-
+    
     cm = confusion_matrix(Y, predY, labels = list(set(Y)))
     numpy.set_printoptions(precision=2)
 
@@ -588,31 +592,26 @@ class WSGICopyBody(object):
             if input is None:
                 return
             if environ.get('HTTP_TRANSFER_ENCODING','0') == 'chunked':
-                size = int(input.readline(),16)
-                while size > 0:
-                    temp = str(input.read(size+2)).strip()
-                    body += temp
-                    size = int(input.readline(),16)
+                while (1):
+                    temp = input.readline() ## 
+                    
+                    if not temp:
+                        break
+                    body +=temp
+            size = len(body)
         else:
             body = environ['wsgi.input'].read(length)
         environ['body_copy'] = body
         environ['wsgi.input'] = StringIO(body)
-
-        # Call the wrapped application
         app_iter = self.application(environ, 
                                     self._sr_callback(start_response))
-
-        # Return modified response
-        #print app_iter
         return app_iter
 
     def _sr_callback(self, start_response):
         def callback(status, headers, exc_info=None):
-
-            # Call upstream start_response
             start_response(status, headers, exc_info)
-        #print callback
         return callback
+
 
 ############################################################
 
