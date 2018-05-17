@@ -1,5 +1,3 @@
-#!flask/bin/python
-
 from __future__ import division
 from flask import Flask, jsonify, abort, request, make_response, url_for
 import json
@@ -32,7 +30,7 @@ import operator
 import matplotlib
 import io
 from io import BytesIO
-#matplotlib.use('Agg')
+# matplotlib.use('Agg')
 import matplotlib.pyplot
 import matplotlib.pyplot as plt
 from operator import itemgetter
@@ -341,7 +339,6 @@ def stats_classification(Y, predY):
     for i in range (len(indices)):
         editedY.append([])
         AUC_decision.append([])
-
     for i in range (len(Y)):
         for j in range (len(indices)):
             if Y[i] == indices[j]: 
@@ -356,7 +353,6 @@ def stats_classification(Y, predY):
                     AUC_decision[j].append(0) 
                 else: 
                     AUC_decision[j].append(1) 
-
     fpr = []
     tpr = []
     thresholds = []
@@ -364,16 +360,11 @@ def stats_classification(Y, predY):
             fpr.append([])
             tpr.append([])
             thresholds.append([])
-
-
     for i in range (len(indices)):
         fpr[i], tpr[i], thresholds[i] = sklearn.metrics.roc_curve(editedY[i], AUC_decision[i])
-
     myROC = plt.figure()
-
     for i in range(len(indices)):
         plt.plot(fpr[i], tpr[i], label='TP/FP rates for Class: '+str(indices[i])) ## Change Message if ROC
-
     #all_fpr = numpy.unique(numpy.concatenate([fpr[i] for i in range(len(indices))]))
     #all_tpr = numpy.unique(numpy.concatenate([tpr[i] for i in range(len(indices))]))
 	
@@ -381,7 +372,6 @@ def stats_classification(Y, predY):
     #all_tpr = numpy.sort(numpy.concatenate([tpr[i] for i in range(len(indices))]))
 	
     #plt.plot(all_fpr, all_tpr, label='Max ROC')
-
     plt.plot([0, 1], [0, 1], 'k--') # y = x
     plt.xlim([-0.05, 1.05]) # +/- 0.05
     plt.ylim([-0.05, 1.05])
@@ -389,19 +379,15 @@ def stats_classification(Y, predY):
     plt.ylabel('True Positive Rate')
     plt.title('ROC-like Representation of Confusion Matrix') ## Change Message if ROC
     plt.legend(loc="lower right")
-
     plt.tight_layout()
-
     figfileROC = BytesIO()
     myROC.savefig(figfileROC, dpi=300, format='png')
     saveas = pickle.dumps(figfileROC.getvalue())
     roc_encoded = base64.b64encode(saveas)
-
     #figfileROC = BytesIO()
     #plt.savefig(figfileROC, format='png')
     #figfileROC.seek(0)  # rewind to beginning of file
     #roc_encoded = base64.b64encode(figfileROC.getvalue())
-
     #plt.show() ##
     plt.close()
     ## end general case roc/auc
@@ -551,7 +537,6 @@ def create_task_validation():
     """
     with open("C:/Python27/delete_this", "rb") as b64_file:
          content = b64_file.read()
-
     decc = base64.standard_b64decode(content) 
     print decc
     mystr = pickle.loads(decc)
@@ -568,7 +553,6 @@ def create_task_validation():
     img = Image.open(stb)
     img.seek(0)
     img.save('C:/Python27/Flask-0.10.1/python-api/Val/fig1W.png', 'png')
-
     decc = base64.standard_b64decode(fig2) 
     mystr = pickle.loads(decc)
     stb = io.BytesIO(mystr)
@@ -635,8 +619,3 @@ class WSGICopyBody(object):
 if __name__ == '__main__': 
     app.wsgi_app = WSGICopyBody(app.wsgi_app) ##
     app.run(host="0.0.0.0", port = 5000, debug = True)
-
-# curl -i -H "Content-Type: application/json" -X POST -d @C:/Python27/Flask-0.10.1/python-api/val.json http://localhost:5000/pws/validation
-# curl -i -H "Content-Type: application/json" -X POST -d @C:/Python27/Flask-0.10.1/python-api/valW.json http://localhost:5000/pws/validation
-# C:\Python27\Flask-0.10.1\python-api 
-# C:/Python27/python valid_service.py

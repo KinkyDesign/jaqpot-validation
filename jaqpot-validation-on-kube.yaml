@@ -1,0 +1,38 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: jaqpot-validation-service
+spec:
+  selector:
+    app: jaqpot-validation
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+
+---
+
+apiVersion: apps/v1beta1 # for versions before 1.8.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: jaqpot-validation-deployment
+spec:
+  selector:
+    matchLabels:
+      app: jaqpot-validation
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      # unlike pod-nginx.yaml, the name is not included in the meta data as a unique name is
+      # generated from the deployment name
+      name: jaqpot-validation
+      labels:
+        app: jaqpot-validation
+    spec:
+      containers:
+      - name: jaqpot-validation
+        image: hub.jaqpot.org/jaqpot-validation
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: jaqpothub
